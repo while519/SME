@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import sys
+sys.path.append('/volatile/yuwu/git-repo/SME')
 from model import *
 
 def load_file(path):
@@ -30,12 +31,31 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
     o = load_file(datapath + dataset + '-rel.pkl')
     if type(embeddings) is list:
         o = o[-embeddings[1].N:, :]
+    
+    tl = load_file(datapath + dataset + '-train-lhs.pkl')
+    tr = load_file(datapath + dataset + '-train-rhs.pkl')
+    to = load_file(datapath + dataset + '-train-rel.pkl')
+    if type(embeddings) is list:
+        to = to[-embeddings[1].N:, :]
+
+
+    vl = load_file(datapath + dataset + '-valid-lhs.pkl')
+    vr = load_file(datapath + dataset + '-valid-rhs.pkl')
+    vo = load_file(datapath + dataset + '-valid-rel.pkl')
+    if type(embeddings) is list:
+        vo = vo[-embeddings[1].N:, :]
 
     # Convert sparse matrix to indexes
     if neval == 'all':
         idxl = convert2idx(l)
         idxr = convert2idx(r)
         idxo = convert2idx(o)
+        idxtl = convert2idx(tl)
+        idxtr = convert2idx(tr)
+        idxto = convert2idx(to)
+        idxvl = convert2idx(vl)
+        idxvr = convert2idx(vr)
+        idxvo = convert2idx(vo)
     else:
         idxl = convert2idx(l)[:neval]
         idxr = convert2idx(r)[:neval]
@@ -45,8 +65,13 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
             subtensorspec=Nsyn)
     rankrfunc = RankRightFnIdx(simfn, embeddings, leftop, rightop,
             subtensorspec=Nsyn)
+            
+    true_triples=np.concatenate([idxtl,idxvl,idxl,idxto,idxvo,idxo,idxtr,idxvr,idxr]).reshape(3,idxtl.shape[0]+idxvl.shape[0]+idxl.shape[0]).T
 
-    res = RankingScoreIdx(ranklfunc, rankrfunc, idxl, idxr, idxo)
+    res = FilteredRankingScoreIdx(ranklfunc, rankrfunc, idxl, idxr, idxo, true_triples)
+    f = open('Filtered_eval.pkl', 'wb')
+    cPickle.dump(res, f, -1)
+    f.close()
     dres = {}
     dres.update({'microlmean': np.mean(res[0])})
     dres.update({'microlmedian': np.median(res[0])})
@@ -208,4 +233,4 @@ def RankingEvalFil(datapath='../data/', dataset='umls-test', op='TransE',
     return MR, T10
 
 if __name__ == '__main__':
-    RankingEval(loadmodel=sys.argv[1])
+    RankingEval(loadmodel='FB15k_TransE/best_valid_model.pkl')
