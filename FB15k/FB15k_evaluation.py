@@ -13,7 +13,7 @@ def convert2idx(spmat):
     return rows[np.argsort(cols)]
 
 
-def RankingEval(datapath='../data/', dataset='FB15k-test',
+def RankingEval(datapath='../data/', dataset='FB15k',
         loadmodel='best_valid_model.pkl', neval='all', Nsyn=14951, n=10,
         idx2synsetfile='FB15k_idx2entity.pkl'):
 
@@ -26,9 +26,9 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
     f.close()
 
     # Load data
-    l = load_file(datapath + dataset + '-lhs.pkl')
-    r = load_file(datapath + dataset + '-rhs.pkl')
-    o = load_file(datapath + dataset + '-rel.pkl')
+    l = load_file(datapath + dataset + '-test-lhs.pkl')
+    r = load_file(datapath + dataset + '-test-rhs.pkl')
+    o = load_file(datapath + dataset + '-test-rel.pkl')
     if type(embeddings) is list:
         o = o[-embeddings[1].N:, :]
     
@@ -136,8 +136,6 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
     dres.update({'dictrelrmedian': dictrelrmedian})
     dres.update({'dictrelgmedian': dictrelgmedian})
     dres.update({'dictrellrn': dictrellrn})
-    dres.update({'dictrelrrn': dictrelrrn})
-    dres.update({'dictrelgrn': dictrelgrn})
 
     dres.update({'macrolmean': np.mean(dictrellmean.values())})
     dres.update({'macrolmedian': np.mean(dictrellmedian.values())})
