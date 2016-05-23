@@ -1,0 +1,13 @@
+#! /bin/csh
+#$ -cwd -V
+#$ -M yuwu@liv.ac.uk
+#$ -m abe
+#$ -r y
+#$ -o tmp.out
+#$ -e tmp.err
+module purge
+module load python/2.7
+echo "Start - `date`"
+python FB15k_Unstructured.py
+python FB15k_evaluation.py
+echo "Finish - `date`"
