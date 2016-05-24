@@ -18,7 +18,7 @@ def RankingEval(datapath='../data/', dataset='FB15k',
         idx2synsetfile='FB15k_idx2entity.pkl'):
 
     # Load model
-    f = open(loadmodel)
+    f = open(loadmodel + '/best_valid_model.pkl')
     embeddings = cPickle.load(f)
     leftop = cPickle.load(f)
     rightop = cPickle.load(f)
@@ -69,7 +69,7 @@ def RankingEval(datapath='../data/', dataset='FB15k',
     true_triples=np.concatenate([idxtl,idxvl,idxl,idxto,idxvo,idxo,idxtr,idxvr,idxr]).reshape(3,idxtl.shape[0]+idxvl.shape[0]+idxl.shape[0]).T
 
     res = FilteredRankingScoreIdx(ranklfunc, rankrfunc, idxl, idxr, idxo, true_triples)
-    f = open('Filtered_eval.pkl', 'wb')
+    f = open(loadmodel + 'Filtered_eval.pkl', 'wb')
     cPickle.dump(res, f, -1)
     f.close()
     dres = {}
@@ -231,4 +231,4 @@ def RankingEvalFil(datapath='../data/', dataset='umls-test', op='TransE',
     return MR, T10
 
 if __name__ == '__main__':
-    RankingEval(loadmodel='FB15k_TransE/best_valid_model.pkl')
+    RankingEval(loadmodel='FB15k_TransE')
