@@ -24,6 +24,7 @@ def RankingEval(datapath='../data/', dataset='FB15k',
     rightop = cPickle.load(f)
     simfn = cPickle.load(f)
     f.close()
+    print('The evaluation model is ' + loadmodel)
 
     # Load data
     l = load_file(datapath + dataset + '-test-lhs.pkl')

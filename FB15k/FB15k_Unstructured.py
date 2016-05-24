@@ -1,6 +1,7 @@
 #! /usr/bin/python
 import sys
 sys.path.append('/volatile/yuwu/git-repo/SME')
+print(sys.version)
 from FB15k_exp import *
 
 
