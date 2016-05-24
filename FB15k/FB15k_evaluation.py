@@ -231,4 +231,4 @@ def RankingEvalFil(datapath='../data/', dataset='umls-test', op='TransE',
     return MR, T10
 
 if __name__ == '__main__':
-    RankingEval(loadmodel='FB15k_TransE')
+    RankingEval(loadmodel=sys.argv[1])
